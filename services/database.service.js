@@ -27,9 +27,16 @@ const createRecord = async (params={}) => {
 };
 
 const getRecords = async (params = []) => {
-    const sql = 'SELECT * from videos';
+    let sql = 'SELECT * from videos';
+    const whereParams = [];
+
+    if ((params.ids || []).length) {
+        sql += ' where id in (' + params.ids.map(i => '?').join(",") + ')';
+        whereParams.push(...params.ids);
+    }
+
     return new Promise((resolve, reject) => {
-        db.all(sql, params, (err, rows) => {
+        db.all(sql, whereParams, (err, rows) => {
             if (err) {
                 return reject(err);
             }

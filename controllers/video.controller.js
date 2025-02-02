@@ -1,4 +1,5 @@
 const videoUtils = require('../services/video.utils');
+const videoJoiner = require('../services/video.joiner');
 const databaseService = require('../services/database.service');
 
 const uploadVideo = async (req, res) => {
@@ -81,9 +82,35 @@ const handleVideoTrimming = async (req, res) => {
     }
 };
 
+const handleVideoJoining = async (req, res) => {
+
+    try {
+        const { videoId1, videoId2 } = req.body;
+
+        const videoList = await databaseService.getRecords({ids: [videoId1, videoId2]});
+
+        const newFilePath = await videoJoiner.joinVideos(videoList);
+
+        await databaseService.createRecord({
+            duration: videoList.reduce((acc, video) => acc + video.duration, 0),
+            fileSize: videoList.reduce((acc, video) => acc + video.filesize, 0),
+            fileType: videoList[0].filetype,
+            filepath: newFilePath,
+            filename: newFilePath.split('/').pop(),            
+        });
+
+        return res.json({ status: 'OK', data: {newFilePath, message: 'Video Added successfully'} });
+    
+    } catch (err) {
+        return res.status(400).json({ status: 'ERROR', message: err.message});
+    }
+    
+};
+
 module.exports = {
     uploadVideo,
     getVideos,
     getVideo,
     handleVideoTrimming,
+    handleVideoJoining,
 };

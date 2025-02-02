@@ -1,4 +1,4 @@
-# video-poc
+# video-poc built using node - v22.13.1
 
 Run application
 ```
