@@ -128,3 +128,12 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+.vscode/**
+package-lock.json
+config/config.demo.json
+config/config.prod.json
+
+uploads/videos/**
+
+
