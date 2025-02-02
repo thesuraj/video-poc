@@ -131,3 +131,6 @@ dist
 
 .vscode/**
 package-lock.json
+config/*.json
+
+
