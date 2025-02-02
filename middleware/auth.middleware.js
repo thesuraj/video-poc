@@ -4,11 +4,17 @@ const Auth = (req, res, next) => {
     const token = req.header('x-auth-token');
 
     if (!token) {
-        throw new Error('No token, authorization denied');
+        return res.status(403).json({
+            status: 'ERROR', 
+            message :'No token, authorization denied'
+        });
     }
 
     if (token !== config.apiKeyToken) {
-        throw new Error('Invalid token, authorization denied');
+        return res.status(403).json({
+            status: 'ERROR', 
+            message :'Invalid token, authorization denied'
+        });
     }
 
     next();

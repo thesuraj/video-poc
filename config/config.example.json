@@ -1,7 +1,7 @@
 {
     "apiKeyToken": "SomeStaticApiToken",
     "fileUpload": {
-        "maxDurationInSeconds": 30,
+        "maxDurationInSeconds": 60,
         "minDurationInSeconds": 5,
         "maxFileSize": 5000000,
         "allowedMimes": ["video/mp4"]
