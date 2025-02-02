@@ -8,5 +8,8 @@ module.exports = (router) => {
 
     router.post('/trimVideo', videoController.handleVideoTrimming);
     router.post('/addVideo', videoController.handleVideoJoining);
+
+    router.post('/getExpiryLink', videoController.getExpiryLinkForVideo);
+    
     return router;
 };

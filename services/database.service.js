@@ -4,7 +4,7 @@ const path = require('path');
 const dbPath = path.join(__dirname, '../', 'dump/videos.db');
 const db = new sqlite3.Database(dbPath);
 
-const createRecord = async (params={}) => {
+const addVideo = async (params={}) => {
     const {
         duration,
         fileSize,
@@ -26,7 +26,7 @@ const createRecord = async (params={}) => {
     })
 };
 
-const getRecords = async (params = []) => {
+const getVideoes = async (params = []) => {
     let sql = 'SELECT * from videos';
     const whereParams = [];
 
@@ -45,7 +45,7 @@ const getRecords = async (params = []) => {
     });
 };
 
-const getRecord = async (params = {}) => {
+const getVideo = async (params = {}) => {
     const sql = 'SELECT * from videos where id=?';
     return new Promise((resolve, reject) => {
         db.get(sql, [params.videoId], (err, row) => {
@@ -79,12 +79,55 @@ const deleteRecord = async (params = []) => {
             return resolve(rows);
         });
     });
-}
+};
+
+const addExpiryLink = async (params={}) => {
+    const {
+        videoId,
+        seconds,
+        hash,
+    } = params;
+    return new Promise((resolve, reject) => {
+        db.serialize(() => {
+            try {
+                const statement = db.run(
+                    'INSERT into expiry_link (video_id, expiry_in_secs, hash, created_at) values (?, ? , ?, ?); SELECT last_insert_rowid();',
+                    [videoId, seconds, hash, new Date().toISOString()],
+                    function(err) {
+                        if (err) {
+                            return reject(err);
+                        }
+                        return resolve(this.lastID);
+                    }
+                );
+                // const a = statement.run();
+                // const b = statement.finalize();
+                // return resolve(statement);
+            } catch (err) {
+                return reject(err);
+            }
+        });
+    });
+};
+
+const getExpiryLink = async (params = {}) => {
+    const sql = 'SELECT * from expiry_link where id=?';
+    return new Promise((resolve, reject) => {
+        db.get(sql, [params.expiryLinkId], (err, row) => {
+            if (err) {
+                return reject(err);
+            }
+            return resolve(row);
+        });
+    });
+};
 
 module.exports = {
-    createRecord,
-    getRecords,
-    getRecord,
+    addVideo,
+    getVideoes,
+    getVideo,
     deleteRecord,
     deleteAllRecord,
+    addExpiryLink,
+    getExpiryLink,
 };

@@ -4,6 +4,7 @@
         "maxDurationInSeconds": 60,
         "minDurationInSeconds": 5,
         "maxFileSize": 5000000,
+        "fileExpiryLinkInSeconds": 3660,
         "allowedMimes": ["video/mp4"]
     }
 }

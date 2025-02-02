@@ -97,7 +97,7 @@ const cutAndReturnNewPath = async (videoObj, startTime, durationToTrim) => {
 };
 
 const trimVideo = async (videoId, startTime, durationToTrim) => {
-    const videoObj = await databaseService.getRecord({videoId});
+    const videoObj = await databaseService.getVideo({videoId});
 
     if (!videoObj) {
         throw new Error('Invalid video ID');
@@ -107,7 +107,7 @@ const trimVideo = async (videoId, startTime, durationToTrim) => {
     try {
         const newFilePath = await cutAndReturnNewPath(videoObj, startTime, durationToTrim);
 
-        await databaseService.createRecord({
+        await databaseService.addVideo({
             duration: durationToTrim,
             fileSize: videoObj.filesize,
             fileType: videoObj.filetype,
